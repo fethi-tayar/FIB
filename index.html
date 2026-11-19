@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trois frères, deux toits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Plan : registre notarial épuré. Papier froid, encre bleu tampon, une couleur par bien.
+   Visuels d'abord (frise, anneaux, jauges), texte caché derrière un tap. */
+:root{
+  --paper:#F1F5FB; --surface:#FFFFFF; --ink:#15191F; --muted:#6B7382; --line:#E1E7F0; --soft:#EEF2F8;
+  --accent:#2C47D4; --accent-soft:#E8ECFC;
+  --gany:#2C47D4; --noisy:#0D8574; --sci:#B7790E;
+  --red:#C9372B; --red-soft:#FBEAE8; --amber:#B7790E; --amber-soft:#FBF1DE; --green:#2F8A4C; --green-soft:#E6F3EA;
+  --display:"Instrument Serif","Times New Roman",serif;
+  --body:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --shadow:0 1px 2px rgba(21,25,31,.04),0 10px 30px rgba(21,25,31,.05);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.55 var(--body);-webkit-font-smoothing:antialiased;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,input{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;padding:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+
+header.top{max-width:920px;margin:0 auto;padding:30px 20px 4px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand small{display:block;font:500 11.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.brand h1{font:400 38px/1 var(--display)}
+.brand h1 i{color:var(--accent);font-style:italic}
+.upd{display:inline-flex;align-items:center;gap:8px;font:500 13.5px/1 var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);padding:10px 14px;border-radius:999px;white-space:nowrap}
+.upd b{font-weight:600}
+.upd i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);margin-top:20px}
+nav.tabs .in{max-width:920px;margin:0 auto;display:flex;gap:6px;padding:10px 14px;overflow-x:auto;scrollbar-width:none}
+nav.tabs .in::-webkit-scrollbar{display:none}
+nav.tabs a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--muted);font-weight:500;font-size:15px;padding:9px 16px;border-radius:999px;white-space:nowrap;transition:background .2s,color .2s}
+nav.tabs a svg{width:18px;height:18px;flex:none}
+nav.tabs a:hover{color:var(--ink)}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:#fff}
+@media (max-width:520px){nav.tabs a{padding:8px 12px;font-size:14px;gap:6px}}
+
+main{max-width:920px;margin:0 auto;padding:28px 16px 60px}
+section.view{display:none;flex-direction:column;gap:28px}
+section.view.on{display:flex;animation:rise .35s ease both}
+@keyframes rise{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){section.view.on{animation:none}*{transition:none!important}}
+
+.card{background:var(--surface);border-radius:24px;box-shadow:var(--shadow);border:1px solid var(--line);padding:28px}
+@media (max-width:520px){.card{padding:22px 18px;border-radius:20px}}
+.eyebrow{font:500 11.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.title{font:400 30px/1.1 var(--display);margin-top:8px}
+.src{display:inline-flex;align-items:center;gap:6px;font:500 11px/1 var(--mono);letter-spacing:.03em;color:var(--muted);background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:5px 8px;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.pill.red{background:var(--red-soft);color:var(--red)} .pill.amber{background:var(--amber-soft);color:var(--amber)}
+.pill.green{background:var(--green-soft);color:var(--green)} .pill.grey{background:var(--soft);color:var(--muted)} .pill.blue{background:var(--accent-soft);color:var(--accent)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.dot.gany{background:var(--gany)} .dot.noisy{background:var(--noisy)} .dot.sci{background:var(--sci)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+
+/* héros */
+.hero{background:radial-gradient(120% 140% at 100% 0%,#5B8CFF 0%,rgba(91,140,255,0) 55%),linear-gradient(135deg,#2C47D4 0%,#2F6BE8 100%);color:#fff;border:0;box-shadow:0 18px 40px -18px rgba(44,71,212,.55);display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center;padding:34px 36px}
+.hero .big{font:400 112px/.8 var(--display);letter-spacing:-.03em}
+.hero .lbl{font:500 11.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;opacity:.8}
+.hero h2{font:400 34px/1.1 var(--display);margin:12px 0 14px}
+.hero .chips{display:flex;gap:8px;flex-wrap:wrap}
+.hero .pill{background:rgba(255,255,255,.18);color:#fff}
+.hero .next{margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.25);display:flex;gap:18px;flex-wrap:wrap;font-size:14px;opacity:.8}
+.hero .next b{font-weight:600}
+.hero .hlist{display:flex;flex-direction:column;gap:8px;margin:14px 0 4px}
+.hero .hi{display:flex;align-items:center;gap:12px;font:400 30px/1.15 var(--display)}
+.hero .hi .dot{width:12px;height:12px;box-shadow:0 0 0 2px #fff}
+.hero .hi em{font:500 12px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.55;font-style:normal;margin-left:auto;padding-left:12px}
+@media (max-width:560px){.hero .hi{font-size:24px}}
+@media (max-width:560px){.hero{grid-template-columns:1fr;gap:16px;padding:26px 22px}.hero .big{font-size:88px}.hero h2{font-size:28px}}
+
+/* anneaux */
+.rings{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ring{display:flex;flex-direction:column;align-items:center;gap:10px;padding:24px 12px;text-align:center}
+.ring svg{width:96px;height:96px}
+.ring .t{font-weight:600;font-size:15px}
+.ring .s{font-size:12.5px;color:var(--muted);margin-top:-6px}
+@media (max-width:520px){.ring{padding:18px 6px}.ring svg{width:76px;height:76px}.ring .t{font-size:13.5px}.ring .s{font-size:11.5px}}
+
+/* décision */
+.decision{display:flex;gap:16px;align-items:center;border-left:4px solid var(--amber);padding:20px 24px;cursor:pointer}
+.decision .ic{width:42px;height:42px;border-radius:50%;background:var(--amber-soft);color:var(--amber);display:grid;place-items:center;font:600 20px/1 var(--body);flex:none}
+.decision h3{font:600 16px/1.35 var(--body)}
+.decision .more{display:none;margin:8px 0 0;color:var(--muted);font-size:14.5px;max-width:62ch}
+.decision.open .more{display:block}
+.decision .chev{margin-left:auto;flex:none;width:10px;height:10px;border-right:1.6px solid var(--muted);border-bottom:1.6px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.decision.open .chev{transform:rotate(-135deg)}
+
+/* frise */
+.tl-wrap{overflow-x:auto;margin:22px -28px 0;padding:0 28px 4px;scrollbar-width:thin}
+@media (max-width:520px){.tl-wrap{margin:22px -18px 0;padding:0 18px 4px}}
+.tl{min-width:900px;display:flex;flex-direction:column}
+.tl-head,.lane{display:grid;grid-template-columns:104px 1fr}
+.tl-name{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;height:36px}
+.tl-track{position:relative;margin-right:140px}
+.tl-head .tl-track{height:46px}
+.tl-head .mo{position:absolute;bottom:8px;font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-left:6px}
+.tl-head .tdy{position:absolute;top:0;transform:translateX(-50%);font:600 10px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:5px 8px;border-radius:6px;white-space:nowrap;z-index:3}
+.lane{border-top:1px solid var(--line)}
+.lane .gl{position:absolute;top:0;bottom:0;width:1px;background:var(--line);opacity:.6}
+.lane .tline{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed var(--ink);opacity:.4}
+.lane .period{position:absolute;top:14px;height:8px;border-radius:8px;opacity:.2}
+.lane.gany .period,.lane.gany .stem,.lane.gany .mk{background:var(--gany)}
+.lane.noisy .period,.lane.noisy .stem,.lane.noisy .mk{background:var(--noisy)}
+.lane.sci .period,.lane.sci .stem,.lane.sci .mk{background:var(--sci)}
+.lane .mk{position:absolute;top:11px;width:14px;height:14px;margin-left:-7px;border-radius:50%;border:3px solid var(--surface);z-index:2}
+.lane .stem{position:absolute;top:18px;width:1.5px;margin-left:-.75px;opacity:.45}
+.lane .ev{position:absolute;margin-left:-.75px;padding:0 8px 2px 9px;display:flex;flex-direction:column;gap:3px;white-space:nowrap;background:var(--surface);z-index:1}
+.lane .ev .dt{font:500 10.5px/1 var(--mono);letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.lane .ev b{font-size:13px;font-weight:600;line-height:1.2}
+.lane .ev.done b{text-decoration:line-through;color:var(--muted)}
+/* lignes d'échéance */
+.rows{display:flex;flex-direction:column;margin-top:8px}
+.row{border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .head{display:grid;grid-template-columns:58px 1fr auto auto;gap:16px;align-items:center;padding:16px 0;width:100%;text-align:left}
+.row .d{font:400 28px/1 var(--display);text-align:center}
+.row .d small{display:block;font:500 10.5px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:5px}
+.row h3{font:600 15.5px/1.35 var(--body);display:flex;align-items:center;gap:9px}
+.row.done h3{color:var(--muted);text-decoration:line-through}
+.row .body{display:none;padding:0 0 18px 74px;color:var(--muted);font-size:14.5px;max-width:680px}
+.row.open .body{display:block}
+.row .body p{margin:0 0 10px}
+@media (max-width:520px){.row .head{grid-template-columns:48px 1fr auto;gap:12px}.row .head .chk{display:none}.row .body{padding-left:60px}.row .body .chk{display:inline-flex}}
+.row .body .chk{display:none;margin-top:4px}
+@media (max-width:520px){.row .body .chk{display:inline-flex}}
+
+.chk{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+.chk input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);display:grid;place-content:center;cursor:pointer;margin:0;transition:all .15s}
+.chk input:hover{border-color:var(--muted)}
+.chk input:checked{background:var(--green);border-color:var(--green)}
+.chk input:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+
+/* SCI : étapes en jalons */
+.track{display:flex;align-items:center;gap:0;margin:26px 0 8px}
+.track .seg{flex:1;height:8px;background:var(--soft);border-radius:8px;margin:0 2px}
+.track .seg.on{background:var(--green)}
+.track .seg.now{background:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;align-items:start}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--shadow);cursor:pointer;transition:border-color .2s,transform .2s}
+.step:hover{border-color:var(--muted)}
+.step.done{background:var(--green-soft);border-color:transparent;box-shadow:none}
+.step.now{border:1.5px solid var(--ink)}
+.step .top{display:flex;justify-content:space-between;align-items:center}
+.step .n{font:400 34px/1 var(--display);color:var(--muted)}
+.step.done .n{color:var(--green)}
+.step h3{font:600 16px/1.35 var(--body)}
+.step .when{font:500 11.5px/1 var(--mono);color:var(--muted);letter-spacing:.04em}
+.step .toggle{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px;font-weight:600;color:var(--accent)}
+.step.done .toggle{border-top-color:color-mix(in srgb,var(--green) 25%,transparent)}
+.step .toggle i{width:8px;height:8px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:rotate(45deg);transition:transform .25s}
+.step.open .toggle i{transform:rotate(-135deg)}
+.step .more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.step.open .more{grid-template-rows:1fr}
+.step .more-in{overflow:hidden;font-size:14.5px;line-height:1.55}
+.step .more-in p{margin:2px 0 0}
+.step .more-in ul{margin:8px 0 0;padding-left:18px}
+.step .more-in li{margin:4px 0}
+.step .more-in .chk{margin:14px 0 2px}
+.step .wc{display:flex;flex-direction:column;gap:8px;margin:14px 0 10px;padding:12px 14px;border-radius:12px;background:var(--soft)}
+.step.done .wc{background:color-mix(in srgb,var(--surface) 60%,transparent)}
+.step .wc div{display:grid;grid-template-columns:44px 1fr;gap:8px;font-size:13.5px;color:var(--ink);line-height:1.45}
+.step .wk{font:500 10.5px/1.6 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.facts2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini{padding:20px}
+.mini .k{font:500 11.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mini .v{font:400 28px/1.1 var(--display);margin-top:10px}
+
+
+/* prêts */
+.loans{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.loans{grid-template-columns:1fr}}
+.loan{position:relative;overflow:hidden}
+.loan::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--gany)}
+.loan.noisy::before{background:var(--noisy)}
+.loan .amt{font:400 52px/1 var(--display);margin:16px 0 4px}
+.loan .stats{display:flex;gap:26px;margin:18px 0 22px;flex-wrap:wrap}
+.loan .stats div{display:flex;flex-direction:column;gap:4px}
+.loan .stats b{font:400 24px/1 var(--display)}
+.loan .stats span{font-size:12.5px;color:var(--muted)}
+.gauge .bar{height:10px;background:var(--soft);border-radius:10px;overflow:hidden}
+.gauge .bar span{display:block;height:100%;border-radius:10px;background:var(--gany)}
+.loan.noisy .gauge .bar span{background:var(--noisy)}
+.gauge .lab{display:flex;justify-content:space-between;font:500 11px/1 var(--mono);color:var(--muted);margin-top:8px;letter-spacing:.03em}
+.funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}
+.funnel div{text-align:center;padding:14px 4px;border-radius:14px;background:var(--soft);font-size:12.5px;color:var(--muted);font-weight:500}
+.funnel div b{display:block;font:400 26px/1 var(--display);color:var(--ink);margin-bottom:6px}
+.funnel div.on{background:var(--accent-soft);color:var(--accent)}
+.banks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+@media (max-width:640px){.banks{grid-template-columns:1fr 1fr}}
+.bank{border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.bank .logo{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font:600 13px/1 var(--mono);color:#fff}
+.bank h3{font:600 15px/1.25 var(--body)}
+.bank .who{font-size:12.5px;color:var(--muted);margin-top:-8px}
+.courtier{display:flex;align-items:center;gap:16px}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:400 22px/1 var(--display);flex:none}
+.courtier h3{font:600 16px/1.3 var(--body)}
+.courtier p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.steps3{display:flex;gap:6px;margin-top:20px}
+.steps3 div{flex:1;padding:12px;border-radius:12px;background:var(--soft);font-size:12.5px;color:var(--muted)}
+.steps3 div b{display:block;font:500 11px/1 var(--mono);letter-spacing:.04em;color:var(--ink);margin-bottom:6px}
+@media (max-width:520px){.steps3{flex-direction:column}}
+
+.drive{display:flex;align-items:center;gap:14px;padding:16px 18px;margin-bottom:14px;border-radius:16px;background:var(--accent-soft);color:var(--accent);text-decoration:none;transition:transform .15s}
+.drive:hover{transform:translateY(-1px)}
+.drive svg{width:26px;height:26px;flex:none}
+.drive span{display:flex;flex-direction:column;gap:2px}
+.drive b{font-weight:600;font-size:15.5px}
+.drive small{font-size:13px;color:var(--muted)}
+.drive i{margin-left:auto;font-style:normal;font-size:18px}
+.courtier a{color:var(--accent)}
+details.docs{border-top:1px solid var(--line)}
+details.docs summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:16px 0;font-weight:600}
+details.docs summary::-webkit-details-marker{display:none}
+details.docs summary::after{content:"";width:9px;height:9px;border-right:1.6px solid var(--muted);border-bottom:1.6px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+details.docs[open] summary::after{transform:rotate(-135deg)}
+.minibar{width:90px;height:6px;border-radius:6px;background:var(--soft);overflow:hidden}
+.minibar span{display:block;height:100%;background:var(--green)}
+.doc{display:grid;grid-template-columns:1fr repeat(3,44px);gap:4px;align-items:center;padding:9px 0;border-top:1px dashed var(--line);font-size:14px}
+.doc.head{border-top:0;font:500 10.5px/1 var(--mono);letter-spacing:.05em;color:var(--muted);text-transform:uppercase;padding-top:0}
+.doc .c{display:flex;justify-content:center}
+
+/* biens */
+.bien{position:relative;overflow:hidden;padding:0}
+.bien .band{height:8px;background:var(--gany)}
+.bien.noisy .band{background:var(--noisy)}
+.bien .in{padding:26px 28px}
+@media (max-width:520px){.bien .in{padding:22px 18px}}
+.bien h3{font:400 40px/1 var(--display)}
+.bien .addr{color:var(--muted);font-size:14px;margin:6px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px}
+@media (max-width:640px){.kpis{grid-template-columns:1fr 1fr}}
+.kpi .k{font-size:12.5px;color:var(--muted)}
+.kpi .v{font:400 28px/1.1 var(--display);margin-top:6px}
+.split{margin-top:24px}
+.split .bar{display:flex;height:12px;border-radius:12px;overflow:hidden;gap:2px}
+.split .bar span{display:block;height:100%}
+.split .lab{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:10px}
+.split .lab i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+details.more{margin-top:20px;border-top:1px solid var(--line)}
+details.more summary{list-style:none;cursor:pointer;padding:14px 0 0;font-size:14px;font-weight:600;color:var(--accent)}
+details.more summary::-webkit-details-marker{display:none}
+details.more ul{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
+details.more li{margin:4px 0}
+.srcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+
+.apport{text-align:left}
+.ap-big{font:400 64px/1 var(--display);margin:14px 0 18px;color:var(--accent)}
+.ap-bar{display:flex;gap:3px;height:14px;border-radius:14px;overflow:hidden}
+.ap-bar span{display:block;height:100%}
+.ap-lab{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted)}
+.ap-lab i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.ap-lab b{color:var(--ink);font-weight:600;margin-left:4px}
+.flow{display:flex;align-items:center;gap:18px;margin-top:16px;flex-wrap:wrap}
+.flow div{display:flex;flex-direction:column;gap:6px}
+.flow b{font:400 36px/1 var(--display)}
+.flow .op{font:400 30px/1 var(--display);color:var(--muted)}
+.flow .res b{color:var(--green)}
+.fk{font-size:12.5px;color:var(--muted)}
+.kpi.hl .v{color:var(--green)}
+.chipsrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.parc{margin-top:18px;overflow-x:auto}
+.prow{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1.3fr;gap:12px;align-items:center;padding:14px 0;border-top:1px solid var(--line);min-width:560px;font-size:15px}
+.prow.head{border-top:0;font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.prow b{font-weight:600;display:block}
+.prow small{color:var(--muted);font-size:12.5px}
+.prow .rb{display:inline-block;height:8px;width:calc(var(--w) * 5px);border-radius:8px;background:var(--accent);opacity:.75;margin-right:8px;vertical-align:1px}
+.tot{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:18px;padding:18px 20px;border-radius:16px;background:var(--soft)}
+.tot div{display:flex;flex-direction:column;gap:6px}
+.tot b{font:400 24px/1.1 var(--display)}
+@media (max-width:640px){.tot{grid-template-columns:1fr 1fr}.ap-big{font-size:52px}.flow b{font-size:28px}.flow{gap:10px}}
+.kpis.k3{grid-template-columns:repeat(3,1fr)}
+.month{margin-top:22px;padding:16px 18px;border-radius:16px;background:var(--soft)}
+.flow.sm{margin-top:10px;gap:14px}
+.flow.sm b{font-size:28px}
+.flow.sm .op{font-size:24px}
+@media (max-width:640px){.kpis.k3{grid-template-columns:1fr 1fr}.flow.sm b{font-size:22px}}
+.bhead{display:flex;justify-content:flex-start;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:10px}
+.bhead h3::after{content:"·";margin-left:14px;color:var(--muted)}
+.bprice{font:400 40px/1 var(--display)}
+.bprice::after{content:"·";margin-left:14px;color:var(--muted)}
+.bcs{font:400 40px/1 var(--display);color:var(--ink)}
+.bcs small{font:500 10.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bien .kpis.k3{grid-template-columns:repeat(2,1fr);max-width:520px}
+.kv{display:grid;grid-template-columns:auto auto;gap:10px 24px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;text-align:right}
+.kv.dt{margin-top:14px;max-width:520px;font-size:15px}
+.kv.dt dt small{font-size:12px}
+.kv.dt dd.pos{color:var(--green)}
+.kv.dt .pp{font-weight:500;font-size:13px;color:var(--muted)}
+/* questions */
+.ask{display:flex;gap:10px;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:8px 8px 8px 20px;box-shadow:var(--shadow)}
+.ask:focus-within{border-color:var(--accent)}
+.ask input{flex:1;border:0;background:transparent;font-size:16.5px;padding:11px 0;outline:none;min-width:0}
+.ask button{background:var(--ink);color:var(--paper);border-radius:14px;width:46px;height:46px;display:grid;place-items:center;flex:none}
+.ask button svg{width:20px;height:20px}
+.sugg{display:flex;flex-wrap:wrap;gap:8px}
+.sugg button{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 15px;font-size:14px;transition:border-color .2s,background .2s}
+.sugg button:hover{border-color:var(--accent);background:var(--accent-soft)}
+.thread{display:flex;flex-direction:column;gap:14px}
+.msg-q{align-self:flex-end;background:var(--ink);color:var(--paper);padding:11px 16px;border-radius:18px 18px 4px 18px;max-width:85%;font-size:15px}
+.msg-a{background:var(--surface);border:1px solid var(--line);border-radius:4px 20px 20px 20px;padding:18px 20px;box-shadow:var(--shadow)}
+.msg-a .ans{font-size:16px;margin:0}
+.msg-a .ans b{font-weight:600}
+.msg-a blockquote{margin:12px 0 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--soft);border-radius:0 10px 10px 0;font-size:13.5px;color:var(--muted);font-style:italic}
+.msg-a .rel{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--muted)}
+.msg-a .rel button{color:var(--accent);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+
+footer{max-width:920px;margin:0 auto;padding:0 20px 34px;color:var(--muted);font-size:12.5px}
+.hint{font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1>Trois frères, <i>deux toits</i></h1>
+  </div>
+  <div class="upd"><i></i>Mis à jour le <b>19 nov. 2026</b></div>
+</header>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="in">
+    <a href="#accueil" data-v="accueil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>Échéances</a>
+    <a href="#sci" data-v="sci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/></svg>SCI</a>
+    <a href="#financement" data-v="financement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18L12 4z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>Prêts</a>
+    <a href="#biens" data-v="biens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h2M14 8h2M8 12h2M14 12h2M10 20.5v-4h4v4"/></svg>Biens</a>
+    <a href="#assistant" data-v="assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>Questions</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ÉCHÉANCES -->
+<section class="view" id="v-accueil" aria-label="Échéances">
+  <div class="card hero" id="hero"></div>
+
+  <div class="rings" id="rings"></div>
+
+  <div class="card">
+    <span class="eyebrow">Novembre 2026 → mai 2027</span>
+    <h2 class="title">La frise</h2>
+    <div class="tl-wrap"><div class="tl" id="tl"></div></div>
+  </div>
+
+  <div class="card">
+    <span class="eyebrow">Touchez une ligne pour le détail</span>
+    <h2 class="title">Toutes les échéances</h2>
+    <div class="rows" id="rows"></div>
+  </div>
+</section>
+
+<!-- SCI -->
+<section class="view" id="v-sci" aria-label="Création de la SCI">
+  <div class="card">
+    <span class="eyebrow">Objectif : Kbis le 24 décembre</span>
+    <h2 class="title" id="sci-title">Création de la SCI</h2>
+    <div class="track" id="track"></div>
+    <div class="hint" id="sci-hint"></div>
+  </div>
+
+  <div class="facts2">
+    <div class="card mini"><div class="k">Nom</div><div class="v" style="color:var(--muted)">À choisir</div></div>
+    <div class="card mini"><div class="k">Comptable</div><div class="v" style="color:var(--muted)">À choisir</div></div>
+  </div>
+
+  <div class="steps" id="steps"></div>
+  <div class="srcs" style="margin-top:-12px"><span class="src">Guides Legalstart · Captain Contrat</span><span class="src">Promesses · p. 5</span></div>
+</section>
+
+<!-- PRÊTS -->
+<section class="view" id="v-financement" aria-label="Prêts">
+  <div class="loans" id="loans"></div>
+
+  <div class="card">
+    <span class="eyebrow">Où en est-on</span>
+    <h2 class="title">Parcours du financement</h2>
+    <div class="funnel">
+      <div class="on"><b>✓</b>Courtier</div>
+      <div><b>0/4</b>Banques</div>
+      <div><b>0</b>Dossiers déposés</div>
+      <div><b>0/2</b>Offres</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="eyebrow">Banques visées</span>
+    <h2 class="title">4 banques</h2>
+    <div class="banks">
+      <div class="bank"><div class="logo" style="background:#0B6B4F">CA</div><div><h3>Crédit Agricole</h3></div><div class="who">Compte d'Ilyes</div><span class="pill grey">À contacter</span></div>
+      <div class="bank"><div class="logo" style="background:#00915A">BNP</div><div><h3>BNP Paribas</h3></div><div class="who">Compte d'Ilyes</div><span class="pill grey">À contacter</span></div>
+      <div class="bank"><div class="logo" style="background:#C8102E">CM</div><div><h3>Crédit Mutuel</h3></div><div class="who">Compte de Bayan</div><span class="pill grey">À contacter</span></div>
+      <div class="bank"><div class="logo" style="background:#1C3F94">LCL</div><div><h3>LCL</h3></div><div class="who">Compte de Fethi</div><span class="pill grey">À contacter</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="courtier">
+      <div class="avatar">GS</div>
+      <div><h3>Guillaume Sitruk · Artémis Courtage</h3><p>avec Clothilde Hyacinthe · contact d'Ilyes · <a href="https://drive.google.com/drive/folders/1kYZPN796dWZYi1VWXK11CKeHQLFyt4SW?usp=sharing" target="_blank" rel="noopener">Drive des pièces</a></p></div>
+    </div>
+    <div class="steps3">
+      <div><b>27 OCT.</b>Lettre de faisabilité</div>
+      <div><b>6 NOV.</b>Liste des pièces + Drive</div>
+      <div><b>16 NOV.</b>Relance d'Ilyes</div>
+    </div>
+    <div class="srcs"><span class="src">Emails 27/10, 06/11, 16/11/2026</span></div>
+  </div>
+
+  <div class="card">
+    <span class="eyebrow">Dossier du courtier</span>
+    <h2 class="title" style="margin-bottom:14px">Pièces à fournir</h2>
+    <a class="drive" href="https://drive.google.com/drive/folders/1kYZPN796dWZYi1VWXK11CKeHQLFyt4SW?usp=sharing" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13l3 3 3-3"/></svg><span><b>Ouvrir le Drive du courtier</b><small>Déposez vos pièces dans IDENTITE, REVENUS, PATRIMOINE, chacun dans son sous-dossier</small></span><i aria-hidden="true">↗</i></a>
+    <div id="docs"></div>
+    <div class="srcs"><span class="src">Email Artémis Courtage · 06/11/2026</span></div>
+  </div>
+</section>
+
+<!-- BIENS -->
+<section class="view" id="v-biens" aria-label="Biens">
+  <div class="card bien">
+    <div class="band"></div>
+    <div class="in">
+      <span class="eyebrow">La Courneuve · 19 rue de Berri</span>
+      <div class="bhead"><h3>Ganymède</h3><span class="bprice num">500 k€</span><span class="bcs">22 janv.</span></div>
+      <div class="kpis k3">
+        <div class="kpi"><div class="k">Coût total</div><div class="v num">539 k€</div></div>
+        <div class="kpi"><div class="k">Acte avant</div><div class="v">26 févr.</div></div>
+      </div>
+      <div class="split">
+        <div class="bar"><span style="width:90.7%;background:var(--gany)"></span><span style="width:1.9%;background:color-mix(in srgb,var(--gany) 55%,var(--surface))"></span><span style="width:7.4%;background:var(--line)"></span></div>
+        <div class="lab"><span><i style="background:var(--gany)"></i>Bien 489,8 k€</span><span><i style="background:color-mix(in srgb,var(--gany) 55%,var(--surface))"></i>Meubles 10,2 k€</span><span><i style="background:var(--line)"></i>Frais de notaire 39,5 k€</span></div>
+      </div>
+      <details class="more"><summary>Détails</summary>
+        <dl class="kv dt">
+          <dt>Nombre de lots</dt><dd class="num">12</dd>
+          <dt>Loyers max / mois</dt><dd class="num">5 535 €</dd>
+          <dt>Mensualité banque <small>(taux 3,7 %)</small></dt><dd class="num">2 951 €</dd>
+          <dt>Cash-flow avant impôts</dt><dd class="num pos">2 584 € <small class="pp">(861 € / personne)</small></dd>
+          <dt>Rentabilité brute</dt><dd class="num">13,3 %</dd>
+        </dl>
+        <div class="srcs"><span class="src">Tableau Investissement · Gestion Ilyes</span></div>
+      </details>
+    </div>
+  </div>
+
+  <div class="card bien noisy">
+    <div class="band"></div>
+    <div class="in">
+      <span class="eyebrow">Noisy-le-Sec · 27-29 rue des Processions</span>
+      <div class="bhead"><h3>Noisy</h3><span class="bprice num">840 k€</span><span class="bcs">15 mars</span></div>
+      <div class="kpis k3">
+        <div class="kpi"><div class="k">Coût total</div><div class="v num">903 k€</div></div>
+        <div class="kpi"><div class="k">Acte avant</div><div class="v">31 mai</div></div>
+      </div>
+      <div class="split">
+        <div class="bar"><span style="width:86.7%;background:var(--noisy)"></span><span style="width:4.1%;background:color-mix(in srgb,var(--noisy) 55%,var(--surface))"></span><span style="width:2.2%;background:color-mix(in srgb,var(--noisy) 25%,var(--surface))"></span><span style="width:7%;background:var(--line)"></span></div>
+        <div class="lab"><span><i style="background:var(--noisy)"></i>Immeuble 782,9 k€</span><span><i style="background:color-mix(in srgb,var(--noisy) 55%,var(--surface))"></i>Meubles 37,1 k€</span><span><i style="background:color-mix(in srgb,var(--noisy) 25%,var(--surface))"></i>Commission 20 k€</span><span><i style="background:var(--line)"></i>Frais de notaire 62,8 k€</span></div>
+      </div>
+      <details class="more"><summary>Détails</summary>
+        <dl class="kv dt">
+          <dt>Nombre de lots</dt><dd class="num">15</dd>
+          <dt>Loyers max / mois</dt><dd class="num">9 300 €</dd>
+          <dt>Mensualité banque <small>(taux 3,7 %)</small></dt><dd class="num">4 958 €</dd>
+          <dt>Cash-flow avant impôts</dt><dd class="num pos">4 342 € <small class="pp">(1 447 € / personne)</small></dd>
+          <dt>Rentabilité brute</dt><dd class="num">13,3 %</dd>
+        </dl>
+        <div class="srcs"><span class="src">Tableau Investissement · Gestion Ilyes</span></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- QUESTIONS -->
+<section class="view" id="v-assistant" aria-label="Questions">
+  <form class="ask" id="ask" autocomplete="off">
+    <input id="q" type="text" placeholder="Posez une question sur le dossier…" aria-label="Votre question">
+    <button type="submit" aria-label="Demander"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </form>
+  <div class="sugg" id="sugg"></div>
+  <div class="thread" id="thread"></div>
+</section>
+
+</main>
+
+<footer>Sources : promesses du 18/11/2026, offre du 26/09/2026, emails du notaire et du courtier. Suivi sans valeur juridique, l'acte fait foi. Les cases cochées restent sur votre appareil.</footer>
+
+<script>
+(function(){
+"use strict";
+var store={get:function(k){try{return JSON.parse(localStorage.getItem("cockpit-sci:"+k)||"null")}catch(e){return null}},set:function(k,v){try{localStorage.setItem("cockpit-sci:"+k,JSON.stringify(v))}catch(e){}}};
+var checks=store.get("checks")||{};
+function isOn(id,def){return(id in checks)?checks[id]:!!def}
+function setOn(id,v){checks[id]=v;store.set("checks",checks)}
+function day(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+var today=new Date();today.setHours(0,0,0,0);
+function diff(s){return Math.round((day(s)-today)/86400000)}
+var MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+var MC=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fd(s){var d=day(s);return d.getDate()+" "+MC[d.getMonth()]}
+
+var DL=[
+ {id:"d1",date:"2026-11-26",bien:"noisy",t:"Virer le séquestre de 10 000 €",lb:"Séquestre",p:"C'est le séquestre : la première partie de l'indemnité d'immobilisation, bloquée chez le notaire du vendeur (Me Lancry). À virer sous 8 jours après la promesse. Elle sera déduite du prix.",src:"Promesse Noisy · p. 36"},
+ {id:"d2",date:"2026-11-26",bien:"gany",t:"Virer le séquestre de 25 000 €",lb:"Séquestre",p:"Somme bloquée chez Me Serrurier, déduite du prix à la vente. Date limite de la promesse : 27/11. Virement groupé avec Noisy le 26/11.",src:"Promesse Ganymède · p. 21"},
+ {id:"d3",date:"2026-12-03",bien:"gany",est:true,t:"Déposer le dossier dans 2 banques",lb:"Dossier",p:"15 jours maximum. Date estimée depuis la promesse du 18/11. Envoyer ensuite les demandes datées au vendeur.",src:"Promesse Ganymède · p. 23"},
+ {id:"d4",date:"2026-12-24",bien:"sci",t:"Obtenir le Kbis",lb:"Kbis",p:"Objectif interne de 5 semaines.",src:"Objectif du 19/11/2026"},
+ {id:"d5",date:"2027-01-22",bien:"gany",t:"Recevoir l'offre de prêt",lb:"Offre",p:"Avant 17 h. Jusqu'à 500 000 €, taux max 4,30 %, 20 à 25 ans.",src:"Promesse Ganymède · p. 22"},
+ {id:"d6",date:"2027-02-11",bien:"gany",t:"Faire acheter la SCI à votre place",lb:"SCI",p:"Substitution au moins 15 jours avant la fin de la promesse. Vous restez garants.",src:"Promesse Ganymède · p. 5"},
+ {id:"d7",date:"2027-02-26",bien:"gany",t:"Signer l'acte de vente",lb:"Acte",p:"Date limite de la promesse, 17 h.",src:"Promesse Ganymède · p. 15"},
+ {id:"d8",date:"2027-03-15",bien:"noisy",t:"Recevoir l'offre de prêt",lb:"Offre",p:"Jusqu'à 840 000 €, taux max 4,00 %, 25 ans.",src:"Promesse Noisy · p. 22"},
+ {id:"d9",date:"2027-03-18",bien:"noisy",t:"Envoyer la lettre recommandée",lb:"LRAR",p:"Informer du résultat du prêt, 3 jours après le 15 mars.",src:"Promesse Noisy · p. 22"},
+ {id:"d10",date:"2027-05-16",bien:"noisy",t:"Faire acheter la SCI à votre place",lb:"SCI",p:"Substitution au moins 15 jours avant la fin de la promesse.",src:"Promesse Noisy · p. 5"},
+ {id:"d11",date:"2027-05-31",bien:"noisy",t:"Signer l'acte de vente",lb:"Acte",p:"Au plus tard 16 h. Prévue entre le 15 avril et le 31 mai.",src:"Promesse Noisy · p. 11"}
+];
+var BIEN={gany:"Ganymède",noisy:"Noisy",sci:"SCI"};
+function urg(n,done){
+  if(done)return'<span class="pill green">Fait</span>';
+  if(n<0)return'<span class="pill red">Dépassé</span>';
+  if(n<=15)return'<span class="pill red num">J-'+n+'</span>';
+  if(n<=45)return'<span class="pill amber num">J-'+n+'</span>';
+  return'<span class="pill grey num">J-'+n+'</span>';
+}
+function ringSVG(val,max,color){
+  var r=40,c=2*Math.PI*r,f=max?val/max:0;
+  return'<svg viewBox="0 0 100 100" role="img" aria-label="'+val+' sur '+max+'"><circle cx="50" cy="50" r="'+r+'" fill="none" stroke="var(--soft)" stroke-width="9"/>'+
+  '<circle cx="50" cy="50" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="9" stroke-linecap="'+(val?"round":"butt")+'" stroke-dasharray="'+(c*f)+' '+c+'" transform="rotate(-90 50 50)"/>'+
+  '<text x="50" y="57" text-anchor="middle" font-family="Instrument Serif,serif" font-size="25" fill="var(--ink)">'+val+'/'+max+'</text></svg>';
+}
+
+var STEPS=[
+ {id:"n1",t:"Choisir le comptable et le nom",date:"2026-11-26",who:"Entre vous",cost:"Création : 800 à 2 000 € chez un comptable, ou 0 à 270 € via un site en ligne. Ensuite 450 à 1 500 € par an pour les comptes.",csrc:"Investissement-locatif.com · Captain Contrat · Indy",x:"Le comptable écrit les statuts, fait la création, puis tient les comptes chaque année. Le nom apparaîtra sur le Kbis, le prêt et l'acte. Le courtier écrit déjà « SCI TAYAR ».",l:["LMNP Expert (à confirmer)","Comptable d'Ilyes","Comptable de Bayan","Autre cabinet spécialisé"]},
+ {id:"n2",t:"Décider les règles de la SCI",date:"2026-12-01",who:"Entre vous, avec le conseil du comptable",x:"Les statuts sont le règlement de la SCI. Avant que le comptable les écrive, vous décidez 4 points :",l:["Impôt : chacun déclare sa part (IR) ou la SCI paie son impôt (IS). Le comptable conseille.","Capital : la somme que vous mettez au départ.","Gérant : la personne qui signe pour la SCI.","Siège : l'adresse officielle. Ganymède est possible."]},
+ {id:"n3",t:"Envoyer le projet de statuts au courtier",date:"2026-12-04",who:"Le comptable l'écrit, vous l'envoyez au courtier",x:"Le projet de statuts est le brouillon du règlement. La banque en a besoin pour étudier le prêt, avant même que la SCI existe."},
+ {id:"n4",t:"Ouvrir le compte et signer les statuts",date:"2026-12-11",who:"La banque, puis vous trois",cost:"0 à 100 € de frais bancaires. Le capital reste à la SCI.",csrc:"LS Compta · Empruntis",x:"La SCI a son propre compte en banque. Vous y versez le capital et la banque donne une attestation. Puis vous signez tous les trois le texte final."},
+ {id:"n5",t:"Publier l'annonce et obtenir le Kbis",date:"2026-12-24",who:"Le comptable, ou vous en ligne",cost:"Environ 310 € : annonce légale 229 € TTC + inscription 79,71 €",csrc:"Legalstart · Le Coin des Entrepreneurs, 2026",x:"Une courte annonce dans un journal officiel dit que la SCI est créée. Puis on l'inscrit officiellement en ligne. Le greffe envoie le Kbis, la carte d'identité de la SCI, que la banque et le notaire demandent."},
+ {id:"n6",t:"Faire acheter la SCI à votre place",date:"2027-02-11",who:"Votre notaire, Me Lairon",cost:"À demander au notaire",x:"Aujourd'hui, c'est vous trois qui avez signé les promesses. La substitution permet à la SCI d'acheter à votre place. À faire avant le 11/02/2027 (Ganymède) et le 16/05/2027 (Noisy). Ganymède : lettre recommandée avec accusé de réception au vendeur, ou accord du vendeur dans l'acte. Noisy : la promesse ne fixe pas de forme. Vous restez garants."}
+];
+
+function renderHero(){
+  var open=DL.filter(function(d){return!isOn(d.id)&&diff(d.date)>=0});
+  var nx=open[0],el=document.getElementById("hero");
+  if(!nx){el.innerHTML='<div class="big">✓</div><div><h2>Tout est à jour</h2></div>';return}
+  var same=open.filter(function(d){return d.date===nx.date}),n=diff(nx.date),then=open.filter(function(d){return d.date!==nx.date}).slice(0,2);
+  var items=same.map(function(d){return'<div class="hi"><i class="dot '+d.bien+'"></i><span>'+esc(d.t)+'</span><em>'+BIEN[d.bien]+'</em></div>'}).join("");
+  el.innerHTML='<div><div class="lbl">Prochaine échéance</div><div class="big num" style="margin-top:12px">'+(n===0?"Auj.":"J-"+n)+'</div></div>'+
+   '<div><div class="chips"><span class="pill">'+fd(nx.date)+'</span>'+(same.length>1?'<span class="pill">'+same.length+' actions</span>':'')+'</div>'+
+   '<div class="hlist">'+items+'</div>'+
+   '<div class="next">'+then.map(function(t){return'<span><b>'+fd(t.date)+'</b> · '+esc(t.t)+' ('+BIEN[t.bien]+')</span>'}).join("")+'</div></div>';
+}
+function renderRings(){
+  var sd=STEPS.filter(function(s){return isOn(s.id,s.def)}).length;
+  document.getElementById("rings").innerHTML=
+   '<div class="card ring">'+ringSVG(sd,STEPS.length,"var(--sci)")+'<div class="t">SCI</div><div class="s">étapes faites</div></div>'+
+   '<div class="card ring">'+ringSVG(0,4,"var(--accent)")+'<div class="t">Banques</div><div class="s">contactées</div></div>'+
+   '<div class="card ring">'+ringSVG(0,2,"var(--noisy)")+'<div class="t">Offres</div><div class="s">de prêt reçues</div></div>';
+}
+function renderTL(){
+  var A=day("2026-11-01"),B=day("2027-06-01"),span=B-A,TW=720,LW=132;
+  function px(d){return((d-A)/span*100)}
+  var LANES=[{k:"sci",n:"SCI",from:"2026-11-19",to:"2026-12-24"},{k:"gany",n:"Ganymède",from:"2026-11-18",to:"2027-02-26"},{k:"noisy",n:"Noisy",from:"2026-11-18",to:"2027-05-31"}];
+  var LB={d1:"Séquestre 10 k€",d2:"Séquestre 25 k€",d3:"Dossier 2 banques",d4:"Kbis reçu",d5:"Offre de prêt",d6:"SCI substituée",d7:"Signature acte",d8:"Offre de prêt",d9:"Lettre recommandée",d10:"SCI substituée",d11:"Signature acte"};
+  var tf=(today-A)/span*100,h='<div class="tl-head"><div class="tl-name"></div><div class="tl-track">';
+  [["2026-11-01","Nov."],["2026-12-01","Déc."],["2027-01-01","Janv."],["2027-02-01","Févr."],["2027-03-01","Mars"],["2027-04-01","Avr."],["2027-05-01","Mai"]].forEach(function(m){h+='<span class="mo" style="left:'+px(day(m[0])).toFixed(2)+'%">'+m[1]+'</span>'});
+  if(tf>0&&tf<100)h+='<span class="tdy" style="left:'+tf.toFixed(2)+'%">Aujourd\'hui</span>';
+  h+='</div></div>';
+  LANES.forEach(function(L){
+    var evs=DL.filter(function(d){return d.bien===L.k}),ends=[],placed=[];
+    evs.forEach(function(d){var x=px(day(d.date))/100*TW,r=0;while(ends[r]!==undefined&&ends[r]>x-6)r++;ends[r]=x+LW;placed.push({d:d,r:r})});
+    var rows=ends.length;
+    h+='<div class="lane '+L.k+'"><div class="tl-name"><i class="dot '+L.k+'"></i>'+L.n+'</div><div class="tl-track" style="height:'+(40+rows*46)+'px">';
+    ["2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01"].forEach(function(m){h+='<span class="gl" style="left:'+px(day(m)).toFixed(2)+'%"></span>'});
+    if(tf>0&&tf<100)h+='<span class="tline" style="left:'+tf.toFixed(2)+'%"></span>';
+    var f=px(day(L.from)),t=px(day(L.to));
+    h+='<span class="period" style="left:'+f.toFixed(2)+'%;width:'+(t-f).toFixed(2)+'%"></span>';
+    placed.forEach(function(o){
+      var d=o.d,x=px(day(d.date)).toFixed(2),on=isOn(d.id),top=36+o.r*46;
+      h+='<span class="stem" style="left:'+x+'%;height:'+(top-18)+'px"></span><span class="mk" style="left:'+x+'%"></span>'+
+        '<div class="ev'+(on?' done':'')+'" style="left:'+x+'%;top:'+top+'px"><span class="dt">'+fd(d.date)+'</span><b>'+esc(LB[d.id])+'</b></div>';
+    });
+    h+='</div></div>';
+  });
+  document.getElementById("tl").innerHTML=h;
+}
+function renderRows(){
+  document.getElementById("rows").innerHTML=DL.map(function(d){
+    var on=isOn(d.id),dd=day(d.date),n=diff(d.date);
+    return'<div class="row'+(on?' done':'')+'" data-row>'+
+     '<button type="button" class="head" aria-expanded="false"><div class="d num">'+dd.getDate()+'<small>'+MC[dd.getMonth()]+'</small></div>'+
+     '<h3><i class="dot '+d.bien+'"></i>'+esc(d.t)+'</h3>'+urg(n,on)+
+     '<label class="chk" onclick="event.stopPropagation()"><input type="checkbox" data-c="'+d.id+'"'+(on?' checked':'')+' aria-label="Fait"></label></button>'+
+     '<div class="body"><p>'+esc(d.p)+'</p><span class="src">'+esc(d.src)+'</span>'+(d.est?' <span class="pill blue">Date estimée</span>':'')+
+     '<div><label class="chk"><input type="checkbox" data-c="'+d.id+'"'+(on?' checked':'')+'>Fait</label></div></div></div>';
+  }).join("");
+}
+function renderSCI(){
+  var done=0,first=null;
+  STEPS.forEach(function(s){if(isOn(s.id,s.def))done++;else if(!first)first=s.id});
+  document.getElementById("track").innerHTML=STEPS.map(function(s){return'<div class="seg'+(isOn(s.id,s.def)?' on':(s.id===first?' now':''))+'"></div>'}).join("");
+  document.getElementById("sci-title").textContent=done+" étape"+(done>1?"s":"")+" sur "+STEPS.length;
+  var f=STEPS.filter(function(s){return s.id===first})[0];
+  document.getElementById("sci-hint").innerHTML=f?'En cours : <b style="color:var(--ink)">'+esc(f.t)+'</b> · cible '+fd(f.date):'Toutes les étapes sont faites.';
+  document.getElementById("steps").innerHTML=STEPS.map(function(s,i){
+    var on=isOn(s.id,s.def),n=diff(s.date);
+    return'<div class="step'+(on?' done':'')+(s.id===first?' now':'')+'" data-step tabindex="0">'+
+     '<div class="top"><span class="n">'+(on?'✓':String(i+1).padStart(2,"0"))+'</span>'+urg(n,on)+'</div>'+
+     '<h3>'+esc(s.t)+'</h3><div class="when">CIBLE '+fd(s.date).toUpperCase()+'</div>'+
+     '<div class="toggle"><span>C\'est quoi ?</span><i></i></div>'+
+     '<div class="more"><div class="more-in"><p>'+esc(s.x)+'</p>'+(s.l?'<ul>'+s.l.map(function(x){return'<li>'+esc(x)+'</li>'}).join("")+'</ul>':'')+
+     '<div class="wc"><div><span class="wk">Qui</span><span>'+esc(s.who)+'</span></div>'+(s.cost?'<div><span class="wk">Coût</span><span>'+esc(s.cost)+'</span></div>':'')+'</div>'+
+     (s.csrc?'<span class="src">'+esc(s.csrc)+'</span>':'')+
+     '<div><label class="chk" onclick="event.stopPropagation()"><input type="checkbox" data-c="'+s.id+'"'+(on?' checked':'')+'>Étape faite</label></div></div></div></div>';
+  }).join("");
+}
+function renderLoans(){
+  var L=[{c:"",n:"Ganymède",a:"500 000 €",t:"4,30 %",d:"20-25 ans",dl:"2027-01-22",src:"Promesse Ganymède · p. 22"},
+         {c:"noisy",n:"Noisy",a:"840 000 €",t:"4,00 %",d:"25 ans",dl:"2027-03-15",src:"Promesse Noisy · p. 21-22"}];
+  var start=day("2026-11-18");
+  document.getElementById("loans").innerHTML=L.map(function(l){
+    var end=day(l.dl),f=Math.max(0,Math.min(1,(today-start)/(end-start))),n=diff(l.dl);
+    return'<div class="card loan '+l.c+'"><span class="eyebrow">Prêt '+l.n+'</span>'+
+     '<div class="amt num">'+l.a+'</div><span class="hint">maximum</span>'+
+     '<div class="stats"><div><b>'+l.t+'</b><span>taux max</span></div><div><b>'+l.d+'</b><span>durée</span></div><div><b>'+(n>=0?n:0)+' j</b><span>restants</span></div></div>'+
+     '<div class="gauge"><div class="bar"><span style="width:'+(Math.max(f,.02)*100)+'%"></span></div><div class="lab"><span>18 NOV.</span><span>OFFRE AVANT '+fd(l.dl).toUpperCase()+'</span></div></div>'+
+     '<div class="srcs"><span class="src">'+l.src+'</span></div></div>';
+  }).join("");
+}
+var DOCS=[
+ {g:"Identité",items:["Pièce d'identité (recto-verso)","Livret de famille","Contrat de mariage, PACS ou divorce","Justificatif de domicile (- 3 mois)","Bail + quittance (si locataire)","Kbis + statuts (si associé SCI)"]},
+ {g:"Revenus",items:["3 bulletins de salaire + contrat","3 avis d'imposition","Revenus locatifs : baux + 2044"]},
+ {g:"Patrimoine",items:["3 mois de relevés de comptes","Justificatif d'apport","Prêts immo : offres + tableaux","Prêts conso : offres + tableaux","Titres de propriété + taxe foncière","Estimation des biens (MeilleursAgents)"]},
+ {g:"Projet",common:true,items:["Promesses signées","DPE","Devis de travaux","Projet de statuts SCI","2 estimations de loyer ou relevé de gestion"]}
+];
+function renderDocs(){
+  document.getElementById("docs").innerHTML=DOCS.map(function(g,gi){
+    var tot=0,ok=0;
+    var rows=g.items.map(function(it,ii){
+      var cells="";
+      ["F","I","B"].forEach(function(w,wi){
+        if(g.common&&wi>0){cells+='<div class="c"></div>';return}
+        var id="doc-"+gi+"-"+ii+"-"+w;tot++;if(isOn(id))ok++;
+        cells+='<div class="c"><label class="chk"><input type="checkbox" data-c="'+id+'"'+(isOn(id)?' checked':'')+' aria-label="'+esc(it)+'"></label></div>';
+      });
+      return'<div class="doc"><span>'+esc(it)+'</span>'+cells+'</div>';
+    }).join("");
+    var head=g.common?'<div class="doc head"><span>Commun</span><div class="c">Fait</div><div class="c"></div><div class="c"></div></div>':'<div class="doc head"><span>Pièce</span><div class="c">Fethi</div><div class="c">Ilyes</div><div class="c">Bayan</div></div>';
+    return'<details class="docs" data-g="'+gi+'"><summary><span>'+g.g+'</span><span class="minibar"><span style="width:'+(tot?ok/tot*100:0)+'%"></span></span></summary>'+head+rows+'</details>';
+  }).join("");
+}
+
+/* interactions */
+var openRows={},openSteps={},openDocs={};
+document.addEventListener("click",function(e){
+  var h=e.target.closest(".row .head");
+  if(h&&!e.target.closest(".chk")){var r=h.parentNode;r.classList.toggle("open");h.setAttribute("aria-expanded",r.classList.contains("open"));return}
+  var s=e.target.closest("[data-step]");
+  if(s&&!e.target.closest(".chk")){s.classList.toggle("open");return}
+  var dc=e.target.closest("#decision");
+  if(dc){dc.classList.toggle("open");dc.setAttribute("aria-expanded",dc.classList.contains("open"));return}
+  var b=e.target.closest("[data-ask]");if(b){ask(b.getAttribute("data-ask"))}
+});
+document.addEventListener("keydown",function(e){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  var t=e.target;if(t.id==="decision"||t.hasAttribute&&t.hasAttribute("data-step")){e.preventDefault();t.click()}
+});
+document.addEventListener("change",function(e){
+  var t=e.target;if(!t.matches("input[data-c]"))return;
+  var openR=[].map.call(document.querySelectorAll(".row.open input[data-c]"),function(i){return i.getAttribute("data-c")});
+  var openS=[].map.call(document.querySelectorAll(".step.open input[data-c]"),function(i){return i.getAttribute("data-c")});
+  var openD=[].map.call(document.querySelectorAll("details.docs[open]"),function(d){return d.getAttribute("data-g")});
+  setOn(t.getAttribute("data-c"),t.checked);renderAll();
+  openR.forEach(function(id){var i=document.querySelector('.row input[data-c="'+id+'"]');if(i)i.closest(".row").classList.add("open")});
+  openS.forEach(function(id){var i=document.querySelector('.step input[data-c="'+id+'"]');if(i)i.closest(".step").classList.add("open")});
+  openD.forEach(function(g){var d=document.querySelector('details.docs[data-g="'+g+'"]');if(d)d.open=true});
+});
+
+/* questions */
+var QA=[
+ {q:"Quand faut-il l'offre de prêt pour Noisy ?",k:"offre pret noisy date limite quand recevoir banque mars",a:"Au plus tard le <b>15 mars 2027</b>. Puis 3 jours pour prévenir le vendeur par lettre recommandée.",x:"au plus tard le 15 mars 2027",s:"Promesse Noisy · p. 22"},
+ {q:"Quand faut-il l'offre de prêt pour Ganymède ?",k:"offre pret ganymede courneuve date limite quand recevoir banque janvier",a:"Au plus tard le <b>22 janvier 2027 à 17 h</b>.",x:"au plus tard le 22 janvier 2027, à dix-sept heures",s:"Promesse Ganymède · p. 22"},
+ {q:"Combien emprunter pour Noisy, à quel taux ?",k:"montant pret noisy taux duree combien emprunter maximum",a:"Jusqu'à <b>840 000 €</b> sur <b>25 ans</b>, taux <b>4,00 % max</b> hors assurance.",s:"Promesse Noisy · p. 21"},
+ {q:"Combien emprunter pour Ganymède, à quel taux ?",k:"montant pret ganymede courneuve taux duree combien emprunter maximum",a:"Jusqu'à <b>500 000 €</b> sur <b>20 à 25 ans</b>, taux <b>4,30 % max</b> hors assurance.",s:"Promesse Ganymède · p. 22"},
+ {q:"Combien emprunter au total ?",k:"total emprunt combien financer deux prets ensemble",a:"Au maximum <b>1 340 000 €</b> (500 000 + 840 000). Le montant réel dépend de votre apport.",s:"Promesses Ganymède p. 22 · Noisy p. 21"},
+ {q:"Combien verser pour l'indemnité de Noisy ?",k:"indemnite immobilisation noisy sequestre verser virement",a:"Total <b>82 000 €</b>. <b>10 000 €</b> à verser avant le <b>26/11/2026</b>. Les 72 000 € restants seulement si vous renoncez sans raison valable.",s:"Promesse Noisy · p. 36-37"},
+ {q:"Combien verser pour l'indemnité de Ganymède ?",k:"indemnite immobilisation ganymede courneuve sequestre verser",a:"Total <b>50 000 €</b>. <b>25 000 €</b> à verser avant le <b>27/11/2026</b>, sinon la promesse peut tomber.",x:"au plus tard le 27 novembre 2026",s:"Promesse Ganymède · p. 21"},
+ {q:"Quand signer l'acte de Noisy ?",k:"signature acte noisy date authentique quand signer vente mai avril",a:"Au plus tard le <b>31 mai 2027 à 16 h</b>, prévu entre le 15 avril et le 31 mai.",s:"Promesse Noisy · p. 11 · Offre 26/09"},
+ {q:"Quand signer l'acte de Ganymède ?",k:"signature acte ganymede courneuve date authentique quand signer vente fevrier",a:"Au plus tard le <b>26 février 2027 à 17 h</b>.",s:"Promesse Ganymède · p. 15"},
+ {q:"La SCI peut-elle acheter à notre place ?",k:"sci substitution acheter place remplacer societe noms promesse",a:"Oui. À notifier avant le <b>11/02/2027</b> (Ganymède) et le <b>16/05/2027</b> (Noisy). Vous restez garants avec la SCI.",s:"Promesses · p. 5"},
+ {q:"Quel est le prix de Noisy ?",k:"prix noisy combien coute achat commission meubles",a:"<b>820 000 €</b> (dont 37 115 € de meubles) + <b>20 000 €</b> de commission à votre charge.",s:"Promesse Noisy · p. 35 · Offre"},
+ {q:"Quel est le prix de Ganymède ?",k:"prix ganymede courneuve combien coute achat frais notaire",a:"<b>500 000 €</b>. Avec les frais estimés, environ <b>539 465 €</b> au total.",s:"Promesse Ganymède · p. 20-22"},
+ {q:"Combien rapportent les loyers de Noisy ?",k:"loyers noisy revenus locatifs rapport mensuel locataires",a:"<b>6 614 € par mois</b> hors charges (8 571 € charges comprises).",s:"Promesse Noisy · p. 15-16"},
+ {q:"Et si les banques refusent ?",k:"refus pret banque refusent non obtention recuperer indemnite",a:"Noisy : il faut le refus d'<b>au moins 2 banques</b> (pas de courtier), puis une lettre recommandée. L'indemnité vous est rendue.",s:"Promesse Noisy · p. 22"},
+ {q:"Que faire pour le prêt Ganymède ?",k:"obligations dossier pret ganymede deposer jours deux banques",a:"Déposer le dossier <b>sous 15 jours dans 2 banques minimum</b>, puis envoyer les demandes datées au vendeur.",s:"Promesse Ganymède · p. 23"},
+ {q:"Qui est notre courtier ?",k:"courtier artemis sitruk clothilde contact",a:"<b>Guillaume Sitruk</b> (Artémis Courtage), avec <b>Clothilde Hyacinthe</b>.",s:"Email · 06/11/2026"},
+ {q:"Quels documents pour le dossier de prêt ?",k:"documents pieces dossier pret fournir liste justificatifs",a:"Identité, revenus, patrimoine, projet. La liste à cocher est dans l'onglet <b>Prêts</b>.",s:"Email Artémis · 06/11/2026"},
+ {q:"Peut-on contacter nos propres banques ?",k:"contacter banques nous memes propres banque demarche",a:"Le courtier demande de <b>ne faire aucune démarche</b>, même auprès de vos banques. Décision à prendre entre vous.",x:"je vous remercie de ne réaliser aucune démarche de votre côté",s:"Email Artémis · 06/11/2026"},
+ {q:"Quelles banques sont visées ?",k:"quelles banques credit agricole bnp mutuel lcl",a:"<b>Crédit Agricole</b>, <b>BNP</b> (Ilyes), <b>Crédit Mutuel</b> (Bayan), <b>LCL</b> (Fethi). Aucune contactée.",s:"Point du 19/11/2026"},
+ {q:"Quelles étapes pour créer la SCI ?",k:"etapes creer sci creation statuts annonce immatriculation kbis",a:"Comptable, nom, statuts, compte bancaire, signature, annonce légale, INPI, Kbis. Détail dans l'onglet <b>SCI</b>.",s:"Guides Legalstart · Captain Contrat"},
+ {q:"Combien coûte la création de la SCI ?",k:"cout creation sci prix frais",a:"Environ <b>300 €</b> de frais obligatoires, hors honoraires du comptable.",s:"Guides Clementine · Indy"},
+ {q:"Comment sont réparties les parts ?",k:"repartition parts sci associes tiers",a:"<b>1/3 chacun</b>.",s:"Décision du 19/11/2026"},
+ {q:"Où mettre le siège de la SCI ?",k:"siege social sci adresse domicilier",a:"Le vendeur de Ganymède accepte le siège au <b>19 rue de Berri</b>, La Courneuve.",s:"Promesse Ganymède · p. 5"},
+ {q:"Qui sont les notaires ?",k:"notaire notaires lairon lancry serrurier gomes",a:"Vous : <b>Me Lairon</b> (01 80 84 48 33, avec Sylvie Gomes). Vendeurs : Me Lancry (Noisy), Me Serrurier (Ganymède).",s:"Promesses · p. 1"},
+ {q:"Y a-t-il des travaux à Noisy ?",k:"travaux noisy degat eaux reparation",a:"Le vendeur doit <b>finir les travaux du dégât des eaux</b> avant l'acte.",s:"Promesse Noisy · p. 22"}
+];
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9% ]/g," ")}
+var STOP={le:1,la:1,les:1,de:1,des:1,du:1,un:1,une:1,et:1,a:1,pour:1,on:1,il:1,faut:1,quel:1,quelle:1,quels:1,quelles:1,est:1,ce:1,que:1,qui:1,en:1,au:1,aux:1,nous:1,notre:1,nos:1,peut:1,y:1,sur:1,se:1,sont:1,faire:1,avoir:1};
+function toks(s){return norm(s).split(/\s+/).filter(function(w){return w&&!STOP[w]&&w.length>1})}
+function score(q,it){var qt=toks(q),hay=toks(it.k+" "+it.q),sc=0;qt.forEach(function(w){if(hay.indexOf(w)>=0)sc+=2;else if(w.length>3&&hay.some(function(h){return h.length>3&&(h.indexOf(w.slice(0,5))===0||w.indexOf(h.slice(0,5))===0)}))sc+=1});return sc}
+function ask(q){
+  q=q.trim();if(!q)return;
+  var r=QA.map(function(it){return{it:it,s:score(q,it)}}).sort(function(a,b){return b.s-a.s}),best=r[0];
+  var html='<div class="msg-q">'+esc(q)+'</div>';
+  if(!best||best.s<2)html+='<div class="msg-a"><p class="ans">Pas de réponse sûre dans les documents. Envoyez la question à Fethi.</p></div>';
+  else{var rel=r.slice(1,3).filter(function(x){return x.s>=2});
+    html+='<div class="msg-a"><p class="ans">'+best.it.a+'</p>'+(best.it.x?'<blockquote>« '+esc(best.it.x)+' »</blockquote>':'')+
+    '<div class="srcs"><span class="src">'+esc(best.it.s)+'</span></div>'+
+    (rel.length?'<div class="rel">Voir aussi : '+rel.map(function(x){return'<button type="button" data-ask="'+esc(x.it.q)+'">'+esc(x.it.q)+'</button>'}).join(" · ")+'</div>':'')+'</div>'}
+  var w=document.createElement("div");w.className="thread";w.innerHTML=html;
+  var th=document.getElementById("thread");th.insertBefore(w,th.firstChild);
+}
+document.getElementById("ask").addEventListener("submit",function(e){e.preventDefault();var i=document.getElementById("q");ask(i.value);i.value=""});
+document.getElementById("sugg").innerHTML=["Quand faut-il l'offre de prêt pour Noisy ?","Combien verser pour l'indemnité de Ganymède ?","La SCI peut-elle acheter à notre place ?","Combien rapportent les loyers de Noisy ?"].map(function(s){return'<button type="button" data-ask="'+esc(s)+'">'+esc(s)+'</button>'}).join("");
+
+
+var VIEWS=["accueil","sci","financement","biens","assistant"];
+function route(){var h=(location.hash||"").replace("#","");if(VIEWS.indexOf(h)<0)h="accueil";
+  VIEWS.forEach(function(v){document.getElementById("v-"+v).classList.toggle("on",v===h);var a=document.querySelector('nav a[data-v="'+v+'"]');if(v===h)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")})}
+window.addEventListener("hashchange",function(){route();window.scrollTo(0,0)});
+function renderAll(){renderHero();renderRings();renderTL();renderRows();renderSCI();renderLoans();renderDocs()}
+renderAll();route();
+})();
+</script>
+</body>
+</html>
